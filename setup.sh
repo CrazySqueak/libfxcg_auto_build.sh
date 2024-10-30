@@ -1,3 +1,5 @@
+#!/bin/bash
+# This shell script is hereby released into the public domain. See https://unlicense.org/ for more information.
 set -e -u -o pipefail
 
 GCC_URL="https://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz"
@@ -13,6 +15,7 @@ BINUTILS_BUILD_DIR="build-binutils"
 CROSS_TARGET_DIR="cross"
 GCC_SUCCESS_MARKER=".gcc-build-ok.marker"
 BINUTILS_SUCCESS_MARKER=".binutils-build-ok.marker"
+MKG3A_SUCCESS_MARKER=".mkg3a-build-ok.marker"
 
 LIBFXCG_GIT_URL="https://github.com/Jonimoose/libfxcg"
 LIBFXCG_BRANCH="v0.6"
@@ -24,7 +27,6 @@ MKG3A_GIT_URL="https://gitlab.com/taricorp/mkg3a.git"
 MKG3A_BRANCH="master"
 MKG3A_SRC_DIR="src-mkg3a"
 MKG3A_BUILD_DIR="build-mkg3a"
-MKG3A_SUCCESS_MARKER=".mkg3a-build-ok.marker"
 
 function count_input_lines {
     # $1 = FORMAT
