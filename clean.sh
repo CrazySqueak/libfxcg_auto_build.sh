@@ -12,3 +12,7 @@ for dir in build/src-*/.git; do
     cd "$dir"/..
     git clean -dfx
 done
+
+# Clean output
+rm -rf cross
+rm -rf libfxcg

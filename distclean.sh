@@ -4,3 +4,7 @@ set -e -x -u -o pipefail
 
 # Clean build files
 rm -rf build/
+
+# Clean output
+rm -rf cross
+rm -rf libfxcg
