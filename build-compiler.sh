@@ -173,3 +173,11 @@ if [[ ! -f "$CROSS_TARGET_DIR/$MKG3A_SUCCESS_MARKER" ]]; then
     cd ..  # WD = setup_dir
 else echo "Already built.";
 fi
+
+set +x
+echo
+echo
+echo
+echo "Gcc and libfxcg have been built successfully."
+echo "GCC and LD can be found in '$CROSS_TARGET_DIR/bin'"
+echo "libfxcg and libc can be found in '$LIBFXCG_TARGET_DIR'"
