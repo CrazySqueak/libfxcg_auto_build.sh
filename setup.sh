@@ -19,7 +19,8 @@ MKG3A_SUCCESS_MARKER=".mkg3a-build-ok.marker"
 
 LIBFXCG_GIT_URL="https://github.com/Jonimoose/libfxcg"
 LIBFXCG_BRANCH="v0.6"
-LIBFXCG_BUILD_DIR="build-libfxcg"
+LIBFXCG_SRC_DIR="src-libfxcg"
+LIBFXCG_BUILD_DIR="$LIBFXCG_SRC_DIR"
 LIBFXCG_ARCHIVE="$LIBFXCG_BUILD_DIR/lib/libfxcg.a"
 LIBC_ARCHIVE="$LIBFXCG_BUILD_DIR/lib/libc.a"
 
@@ -54,6 +55,11 @@ function extract_src_skip_root {
         mv "$2.tmp/$OUT_DIR" "$2"
         rmdir "$2.tmp"
     fi
+}
+function cd_or_mkdir {
+    # $1 = PATH
+    if [[ ! -d "$1" ]]; then mkdir -p "$1"; fi
+    cd "$1"
 }
 
 function git_clone_or_pull {
@@ -97,9 +103,7 @@ echo "Building binutils..."
 if [[ ! -f "$CROSS_TARGET_DIR/$BINUTILS_SUCCESS_MARKER" ]]; then
     download_or_cached "$BINUTILS_URL" "$BINUTILS_XZ_PATH"
     extract_src_skip_root "$BINUTILS_XZ_PATH" "$BINUTILS_SRC_DIR"
-    
-    if [[ -d "$BINUTILS_BUILD_DIR" ]]; then rm -rf "$BINUTILS_BUILD_DIR"; fi
-    mkdir -p "$BINUTILS_BUILD_DIR"; cd "$BINUTILS_BUILD_DIR" # WD = setup_dir/build-binutils
+    cd_or_mkdir "$BINUTILS_BUILD_DIR" # WD = setup_dir/build-binutils
 
     ../"$BINUTILS_SRC_DIR"/./configure --target=sh3eb-elf --prefix="$CROSS_TARGET_DIR" --disable-nls
     make -j$(nproc)
@@ -115,9 +119,7 @@ echo "Building GCC..."
 if [[ ! -f "$CROSS_TARGET_DIR/$GCC_SUCCESS_MARKER" ]]; then
     download_or_cached "$GCC_URL" "$GCC_XZ_PATH"
     extract_src_skip_root "$GCC_XZ_PATH" "$GCC_SRC_DIR"
-
-    if [[ -d "$GCC_BUILD_DIR" ]]; then rm -rf "$GCC_BUILD_DIR"; fi
-    mkdir -p "$GCC_BUILD_DIR"; cd "$GCC_BUILD_DIR" # WD = setup_dir/build-gcc
+    cd_or_mkdir "$GCC_BUILD_DIR" # WD = setup_dir/build-gcc
 
     export PATH="$PATH:$CROSS_TARGET_DIR/bin"
     ../"$GCC_SRC_DIR"/./configure --target=sh3eb-elf --prefix="$CROSS_TARGET_DIR" --disable-nls --enable-languages=c,c++ --without-headers
@@ -135,8 +137,8 @@ export PATH="$PATH:$CROSS_TARGET_DIR/bin"
 #### 
 echo "Building libfxcg..."
 if [[ ! -f "$LIBFXCG_ARCHIVE" ]] || [[ ! -f "$LIBC_ARCHIVE" ]]; then
-    git_clone_or_pull "$LIBFXCG_GIT_URL" "$LIBFXCG_BUILD_DIR" "$LIBFXCG_BRANCH"
-    cd "$LIBFXCG_BUILD_DIR"  # WD = setup_dir/build-libfxcg
+    git_clone_or_pull "$LIBFXCG_GIT_URL" "$LIBFXCG_SRC_DIR" "$LIBFXCG_BRANCH"
+    cd "$LIBFXCG_SRC_DIR"  # WD = setup_dir/src-libfxcg
     
     make -j$(nproc)
     
@@ -149,8 +151,7 @@ echo "Building mkg3a..."
 if [[ ! -f "$CROSS_TARGET_DIR/$MKG3A_SUCCESS_MARKER" ]]; then
     git_clone_or_pull "$MKG3A_GIT_URL" "$MKG3A_SRC_DIR" "$MKG3A_BRANCH"
     
-    if [[ -d "$MKG3A_BUILD_DIR" ]]; then rm -rf "$MKG3A_BUILD_DIR"; fi
-    mkdir -p "$MKG3A_BUILD_DIR"; cd "$MKG3A_BUILD_DIR" # WD = setup_dir/build-mkg3a
+    cd_or_mkdir "$MKG3A_BUILD_DIR" # WD = setup_dir/build-mkg3a
     
     cmake -DCMAKE_INSTALL_PREFIX:PATH="$CROSS_TARGET_DIR" ../"$MKG3A_SRC_DIR"/.
     make -j$(nproc)
