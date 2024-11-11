@@ -32,9 +32,11 @@ LIBFXCG_BUILD_DIR="$LIBFXCG_SRC_DIR"
 LIBFXCG_ARCHIVE_BUILD="$BUILD_ROOT/$LIBFXCG_BUILD_DIR/lib/libfxcg.a"
 LIBC_ARCHIVE_BUILD="$BUILD_ROOT/$LIBFXCG_BUILD_DIR/lib/libc.a"
 LIBFXCG_INCLUDE_BUILD="$BUILD_ROOT/$LIBFXCG_BUILD_DIR/include"
+LIBFXCG_LINKER_SCRIPT_BUILD="$BUILD_ROOT/$LIBFXCG_BUILD_DIR/toolchain/prizm.x"
 LIBFXCG_ARCHIVE_DIST="$LIBFXCG_TARGET_DIR/lib/libfxcg.a"
 LIBC_ARCHIVE_DIST="$LIBFXCG_TARGET_DIR/lib/libc.a"
 LIBFXCG_INCLUDE_DIST="$LIBFXCG_TARGET_DIR/include"
+LIBFXCG_LINKER_SCRIPT_DIST="$LIBFXCG_TARGET_DIR/prizm.x"
 
 MKG3A_GIT_URL="https://gitlab.com/taricorp/mkg3a.git"
 MKG3A_BRANCH="master"
@@ -147,7 +149,7 @@ export PATH="$PATH:$CROSS_TARGET_DIR/bin"
 
 #### 
 echo "Building libfxcg..."
-if [[ ! -f "$LIBFXCG_ARCHIVE_DIST" ]] || [[ ! -f "$LIBC_ARCHIVE_DIST" ]]; then
+if [[ ! -f "$LIBFXCG_ARCHIVE_DIST" ]] || [[ ! -f "$LIBC_ARCHIVE_DIST" ]] || [[ ! -f "$LIBFXCG_LINKER_SCRIPT_DIST" ]]; then
     cd "$BUILD_ROOT"
     git_clone_or_pull "$LIBFXCG_GIT_URL" "$LIBFXCG_SRC_DIR" "$LIBFXCG_BRANCH"
     cd "$LIBFXCG_SRC_DIR"  # (no configure support) WD = setup_dir/src-libfxcg
@@ -157,6 +159,7 @@ if [[ ! -f "$LIBFXCG_ARCHIVE_DIST" ]] || [[ ! -f "$LIBC_ARCHIVE_DIST" ]]; then
     cp "$LIBFXCG_ARCHIVE_BUILD" "$LIBFXCG_ARCHIVE_DIST"
     cp "$LIBC_ARCHIVE_BUILD" "$LIBC_ARCHIVE_DIST"
     cp -rT "$LIBFXCG_INCLUDE_BUILD" "$LIBFXCG_INCLUDE_DIST"
+    cp "$LIBFXCG_LINKER_SCRIPT_BUILD" "$LIBFXCG_LINKER_SCRIPT_DIST"
     cd ..
 else echo "Already built.";
 fi
